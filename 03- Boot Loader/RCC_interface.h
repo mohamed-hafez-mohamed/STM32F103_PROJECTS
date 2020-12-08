@@ -171,7 +171,20 @@
 *******************************************************************************/
 
 extern void MRCC_voidEnableClock(u8 Copy_u8BusId,  u8 Copy_u8BperId);
+
+extern void MRCC_voidDisableClock(u8 Copy_u8BusId, u8 Copy_u8BperId);
+
 extern void MRCC_voidInitSysClock(void);
+
+extern void MRCC_voidSetAHBPRE(void);
+
+extern void MRCC_voidSetAPB1Pre(void);
+
+extern void MRCC_voidSetAPB2Pre(void);
+
+extern void MRCC_voidSetADCPre(void);
+
+extern void MRCC_voidMcoClk(void);
 
 //TODO: UPDATE COMMENT BELOW
 #endif /*File_H_*/

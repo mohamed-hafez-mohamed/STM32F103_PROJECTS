@@ -114,6 +114,60 @@ void MRCC_voidEnableClock(u8 Copy_u8BusId, u8 Copy_u8BperId)
 	{
 		//TODO: Return Error Code
 	}
+	
+}
+
+/******************************************************************************
+* Function : RCC_u8DisableClock(u8 Copy_u8BusId, u8 Copy_u8BperId)
+*//** 
+* \b Description:
+*
+* This function is used to disable the clock for the chosen perpheral.  
+*
+* PRE-CONDITION:  Peripheral id less than 31(number of bits in the register)
+*
+* POST-CONDITION: Peripheral clock enabled
+*
+* @param          Copy_u8BusId  is the Bus type
+* 
+* @param          Copy_u8BperId is the peripheral type
+* 
+* @return 		  TODO: Normal return or error code.
+*
+* \b Example Example:
+* @code
+* 	TODO: u8 return_code = RCC_u8DisableClock(RCC_AHB, DMA1);
+*
+* @endcode
+*
+* @see RCC_u8DisableClock
+*
+* <br><b> - HISTORY OF CHANGES - </b>
+*  
+* <table align="left" style="width:800px">
+* <tr><td> Date       </td><td> Software Version </td><td> Initials </td><td> Description </td></tr>
+* <tr><td> 10/08/2020 </td><td> 0.5.0            </td><td> JWB      </td><td> Interface Created </td></tr>
+* </table><br><br>
+* <hr>
+*
+*******************************************************************************/
+void MRCC_voidDisableClock(u8 Copy_u8BusId, u8 Copy_u8BperId) 
+{
+    if(Copy_u8BperId <= 31)
+	{
+		switch(Copy_u8BusId)
+		{
+			case RCC_AHB  : CLR_BIT(RCC_AHBENR,  Copy_u8BperId); break;
+			case RCC_APB1 : CLR_BIT(RCC_APB1ENR, Copy_u8BperId); break;
+			case RCC_APB2 : CLR_BIT(RCC_APB2ENR, Copy_u8BperId); break;
+			//default       : /*TODO: Return Error Code*/          break;
+		}
+	}
+	else
+	{
+		//TODO: Return Error Code
+	}
+	
 }
 
 /******************************************************************************
@@ -255,7 +309,102 @@ void MRCC_voidInitSysClock(void)
 		while(!(GET_BIT(RCC_CR, RCC_CR_HSIRDY)));
         RCC_CFGR |= RCC_CFGR_SW_HSI;
 	#endif 
+	
 }
 
+void MRCC_voidSetAHBPRE(void)
+{
+	#if   RCC_HPRE_DIV_VAL == RCC_HPRE_DIV1
+        RCC_CFGR |= RCC_CFGR_HPRE_DIV1;
+	#elif RCC_HPRE_DIV_VAL == RCC_HPRE_DIV2
+        RCC_CFGR |= RCC_CFGR_HPRE_DIV2;
+	#elif RCC_HPRE_DIV_VAL == RCC_HPRE_DIV4
+        RCC_CFGR |= RCC_CFGR_HPRE_DIV4;
+	#elif RCC_HPRE_DIV_VAL == RCC_HPRE_DIV8
+        RCC_CFGR |= RCC_CFGR_HPRE_DIV8;
+	#elif RCC_HPRE_DIV_VAL == RCC_HPRE_DIV16
+        RCC_CFGR |= RCC_CFGR_HPRE_DIV16;
+	#elif RCC_HPRE_DIV_VAL == RCC_HPRE_DIV64
+        RCC_CFGR |= RCC_CFGR_HPRE_DIV64;
+	#elif RCC_HPRE_DIV_VAL == RCC_HPRE_DIV128
+        RCC_CFGR |= RCC_CFGR_HPRE_DIV128;
+	#elif RCC_HPRE_DIV_VAL == RCC_HPRE_DIV256
+        RCC_CFGR |= RCC_CFGR_HPRE_DIV256;
+	#elif RCC_HPRE_DIV_VAL == RCC_HPRE_DIV512
+	    RCC_CFGR |= RCC_CFGR_HPRE_DIV512;
+	#else
+	    RCC_CFGR |= RCC_CFGR_HPRE_DIV1;
+		#warning(Wrong HPRE....DIV1 is default)
+	#endif
+
+}
+
+void MRCC_voidSetAPB1Pre(void)
+{
+	#if   RCC_PPRE1_DIV_VAL == RCC_PPRE1_DIV1
+        RCC_CFGR |= RCC_CFGR_PPRE1_DIV1;
+	#elif RCC_PPRE1_DIV_VAL == RCC_PPRE1_DIV2
+        RCC_CFGR |= RCC_CFGR_PPRE1_DIV2;
+	#elif RCC_PPRE1_DIV_VAL == RCC_PPRE1_DIV4
+        RCC_CFGR |= RCC_CFGR_PPRE1_DIV4;
+	#elif RCC_PPRE1_DIV_VAL == RCC_PPRE1_DIV8
+        RCC_CFGR |= RCC_CFGR_PPRE1_DIV8;
+	#elif RCC_PPRE1_DIV_VAL == RCC_PPRE1_DIV16
+        RCC_CFGR |= RCC_CFGR_PPRE1_DIV16;
+	#else
+	    RCC_CFGR |= RCC_CFGR_PPRE1_DIV1;
+		#warning(Wrong PPRE1....DIV1 is default)
+	#endif
+}
+
+void MRCC_voidSetAPB2Pre(void)
+{
+	#if   RCC_PPRE2_DIV_VAL == RCC_PPRE2_DIV1
+        RCC_CFGR |= RCC_CFGR_PPRE2_DIV1;
+	#elif RCC_PPRE2_DIV_VAL == RCC_PPRE2_DIV2
+        RCC_CFGR |= RCC_CFGR_PPRE2_DIV2;
+	#elif RCC_PPRE2_DIV_VAL == RCC_PPRE2_DIV4
+        RCC_CFGR |= RCC_CFGR_PPRE2_DIV4;
+	#elif RCC_PPRE2_DIV_VAL == RCC_PPRE2_DIV8
+        RCC_CFGR |= RCC_CFGR_PPRE2_DIV8;
+	#elif RCC_PPRE2_DIV_VAL == RCC_PPRE2_DIV16
+        RCC_CFGR |= RCC_CFGR_PPRE2_DIV16;
+	#else
+	    RCC_CFGR |= RCC_CFGR_PPRE2_DIV1;
+		#warning(Wrong PRE2....DIV1 is default)
+	#endif
+}
+
+void MRCC_voidSetADCPre(void)
+{
+	#if   RCC_ADCPRE_DIV_VAL == RCC_ADCPRE_DIV2
+        RCC_CFGR |= RCC_CFGR_ADCPRE_DIV2;
+	#elif RCC_ADCPRE_DIV_VAL == RCC_ADCPRE_DIV4
+        RCC_CFGR |= RCC_CFGR_ADCPRE_DIV4;
+	#elif RCC_ADCPRE_DIV_VAL == RCC_ADCPRE_DIV6
+        RCC_CFGR |= RCC_CFGR_ADCPRE_DIV6;
+	#elif RCC_ADCPRE_DIV_VAL == RCC_ADCPRE_DIV8
+        RCC_CFGR |= RCC_CFGR_ADCPRE_DIV8;
+	#else
+	    RCC_CFGR_ADCPRE_DIV2;
+		#warning(Wrong ADCPRE....DIV2 is default)
+	#endif
+}
+
+void MRCC_voidMcoClk(void)
+{
+	#if   RCC_MCO_CLK == RCC_MCO_NO_CLK
+	   RCC_CFGR |= RCC_CFGR_MCO_NOCLOCK;
+	#elif RCC_MCO_CLK == RCC_MCO_SYS_CLK
+	   RCC_CFGR |= RCC_CFGR_MCO_SYSCLK;
+	#elif RCC_MCO_CLK == RCC_MCO_HSI_CLK
+       RCC_CFGR |= RCC_CFGR_MCO_HSI;
+	#elif RCC_MCO_CLK == RCC_MCO_HSE_CLK
+       RCC_CFGR |= RCC_CFGR_MCO_HSE;
+	#elif RCC_MCO_CLK == RCC_MCO_PLL_DVID2_CLK
+	   RCC_CFGR |= RCC_CFGR_MCO_PLL;
+	#endif // 
+	
+}
 
 /*************** END OF FUNCTIONS ***************************************************************************/

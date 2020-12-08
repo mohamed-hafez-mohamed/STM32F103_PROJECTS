@@ -165,6 +165,7 @@ typedef enum
 
 void MGPIO_voidSetPinMode( GPIO_PinId_t copy_u8PinId , GPIO_PIN_MODE copy_u8Mode);
 void MGPIO_voidSetPinValue(GPIO_PinId_t copy_u8PinId , u8 copy_u8Value);
+u8   MGPIO_u8GetPinValue(GPIO_PinId_t copy_u8PinId);
 
 
 

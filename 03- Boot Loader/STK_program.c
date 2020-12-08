@@ -92,6 +92,16 @@ void MSTK_voidInit(void)
     Static_u8PeriodicMs = 0;
 }
 
+void MSTK_voidSetBusyWait_ms(u16 Copy_u16DelayMs)
+{
+    u16 Local_u16Ticks = STK_u16ConfigIntervalMs();
+    STK->VAL  = STK_CLR_REG;
+    STK->LOAD = Local_u16Ticks * Copy_u16DelayMs;
+    SET_BIT(STK->CTRL, ENABLE);
+    while(GET_BIT(STK->CTRL, COUNTFLAG) == 0);
+    CLR_BIT(STK->CTRL, ENABLE);
+}
+
 void MSTK_voidSetBusyWait_us(u32 Copy_u32DelayUs)
 {
     u8 Local_u8Ticks = STK_u8ConfigIntervalUs();
@@ -100,6 +110,19 @@ void MSTK_voidSetBusyWait_us(u32 Copy_u32DelayUs)
     SET_BIT(STK->CTRL, ENABLE);
     while(GET_BIT(STK->CTRL, COUNTFLAG) == 0);
     CLR_BIT(STK->CTRL, ENABLE);
+}
+
+void MSTK_voidSetIntervalSingle_us(u32 Copy_u32DelayUs, STK_PtrToFunction Copy_PtrFunction, void * Copy_Parameter)
+{
+    u8 Local_u8Ticks = STK_u8ConfigIntervalUs;
+    CLR_BIT(STK->CTRL, ENABLE);
+    STK->VAL  = STK_CLR_REG;
+    STK->LOAD = Local_u8Ticks * Copy_u32DelayUs;
+    Static_u8SingleUs = 1;
+    CallBackFunction[0]  = Copy_PtrFunction;
+    ParameterCallBack[0] = Copy_Parameter;
+    SET_BIT(STK->CTRL, TICKINT);
+    SET_BIT(STK->CTRL, ENABLE);
 }
 
 void MSTK_voidSetIntervalSingle_ms(u16 Copy_u16DelayMs, STK_PtrToFunction Copy_PtrFunction, void * Copy_Parameter)
@@ -115,10 +138,62 @@ void MSTK_voidSetIntervalSingle_ms(u16 Copy_u16DelayMs, STK_PtrToFunction Copy_P
     SET_BIT(STK->CTRL, ENABLE);
 }
 
+void MSTK_voidSetIntervalPeriodic_us(u32 Copy_u32DelayUs, STK_PtrToFunction Copy_PtrFunction, void * Copy_Parameter)
+{
+    u8 Local_u8Ticks = STK_u8ConfigIntervalUs();
+    CLR_BIT(STK->CTRL, ENABLE);
+    STK->VAL  = STK_CLR_REG;
+    STK->LOAD = (Local_u8Ticks * Copy_u32DelayUs) - STK_SUB_1_FOR_PERIODIC;
+    Static_u8PeriodcUs = 1;
+    CallBackFunction[2]  = Copy_PtrFunction;
+    ParameterCallBack[2] = Copy_Parameter;
+    SET_BIT(STK->CTRL, TICKINT);
+    SET_BIT(STK->CTRL, ENABLE);
+}
+
+void MSTK_voidSetIntervalPeriodic_ms(u16 Copy_u16DelayMs, STK_PtrToFunction Copy_PtrFunction, void * Copy_Parameter)
+{
+    u16 Local_u16Ticks = STK_u16ConfigIntervalMs();
+    CLR_BIT(STK->CTRL, ENABLE);
+    STK->VAL  = STK_CLR_REG;
+    STK->LOAD = (Local_u16Ticks * Copy_u16DelayMs) - STK_SUB_1_FOR_PERIODIC;
+    Static_u8PeriodicMs = 1;
+    CallBackFunction[3]  = Copy_PtrFunction;
+    ParameterCallBack[3] = Copy_Parameter;
+    SET_BIT(STK->CTRL, TICKINT);
+    SET_BIT(STK->CTRL, ENABLE);
+}
+
+u32  MSTK_u32GetElapsedTime_us(void)
+{
+    return (STK->LOAD - STK->VAL) * STK_u8ConfigIntervalUs();
+}
+
+u32  MSTK_u32GetElapsedTime_ms(void)
+{
+    return (STK->LOAD - STK->VAL) * STK_u16ConfigIntervalMs();
+}
+
+u32  MSTK_u32GetRemainingTime_us(void)
+{
+    return (STK->VAL) * STK_u8ConfigIntervalUs();
+}
+
+u32  MSTK_u32GetRemainingTime_ms(void)
+{
+    return (STK->VAL) * STK_u16ConfigIntervalMs();
+}
+
 void MSTK_voidStopStk(void)
 {
     CLR_BIT(STK->CTRL, ENABLE);
 	CLR_BIT(STK->CTRL, TICKINT);
+}
+
+void MSTK_voidResumeStk(void)
+{
+    SET_BIT(STK->CTRL, ENABLE);
+	SET_BIT(STK->CTRL, TICKINT);
 }
 
 void SysTick_Handler(void)

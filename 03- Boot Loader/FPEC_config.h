@@ -40,8 +40,6 @@
 * Configuration Constants
 *******************************************************************************/
 
-#define FIRST_PAGE_NUMBER_IN_APP_AREA   4
-#define LAST_PAGE_NUMBER_IN_APP_AREA    64
 #endif /*File_H_*/
 
 /*** End of File **************************************************************/

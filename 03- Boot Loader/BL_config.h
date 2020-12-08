@@ -41,8 +41,8 @@
 *******************************************************************************/
 
 #define HIGH_PART_OF_ADDRESS       0x08000000
-#define ADRESS_OF_APP_STARTUP      0x08001000
-#define ADRESS_OF_APP              0x08001004
+#define ADRESS_OF_APP_STARTUP      0x08002000
+#define ADRESS_OF_APP              0x08002004
 #endif /*File_H_*/
 
 /*** End of File **************************************************************/

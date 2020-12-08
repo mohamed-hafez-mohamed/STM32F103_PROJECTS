@@ -40,7 +40,7 @@
 * Configuration Constants
 *******************************************************************************/
 #define NUMBER_OF_DIGITS_IN_RECORD        45
-#define WAIT_TIME                         5000
+#define WAIT_TIME                         15000
 #define RECEIVED_DATA                     1
 #define THE_LAST_NUMBER_IN_RECORD         '\n'
 #define WRITING_FLASH_REQUSTED            1
@@ -63,6 +63,8 @@ typedef void (*Function_t)(void);
 *******************************************************************************/
 
 void ABL_voidParseData(u8 * Copy_u8BufferRecord);
+void ABL_voidParseUPperAddress(u8 * Copy_u8BufferRecord);
+void ABL_voidParseRecord(u8 * Copy_u8BufferRecord); 
 void ABL_voidJumpToApp(void);
 #endif /*File_H_*/
 

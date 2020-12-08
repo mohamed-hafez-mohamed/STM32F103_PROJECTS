@@ -189,7 +189,55 @@ void MGPIO_voidSetPinValue (GPIO_PinId_t copy_u8PinId , u8 copy_u8Value)
     {
         /*TODO: Error Codes*/
     }
+    
 }
 
+u8 MGPIO_u8GetPinValue (GPIO_PinId_t copy_u8PinId)
+{
+    u8 u8_value = 0;
+    GPIO_PortId_t copy_u8PortId;
+    if(copy_u8PinId >= GPIO_PORTA_ENTRY && copy_u8PinId <= GPIO_PORTA_END)
+    {
+        copy_u8PortId = PORTA;
+    }
+    else if(copy_u8PinId >= GPIO_PORTB_ENTRY && copy_u8PinId <= GPIO_PORTB_END)
+    {
+        copy_u8PortId = PORTB;
+        copy_u8PinId -= GPIO_ADJUST_PORTB_PIN;
+    }
+    else if(copy_u8PinId >= GPIO_PORTC_ENTRY && copy_u8PinId <= GPIO_PORTC_END)
+    {
+        copy_u8PortId = PORTC;
+        copy_u8PinId -= GPIO_ADJUST_PORTC_PIN;
+    }
+    else
+    {
+        /*!<TODO: Error Codes*/
+    }
+    if(copy_u8PinId <= GPIO_PORT_END)
+    {
+        switch(copy_u8PortId)
+        {
+            case PORTA :
+                u8_value = GET_BIT(GPIOA_IDR, copy_u8PinId);
+            break;
+            case PORTB :
+                u8_value = GET_BIT(GPIOB_IDR, copy_u8PinId);
+            break;
+            case PORTC :
+                u8_value = GET_BIT(GPIOC_IDR, copy_u8PinId);
+            break;
+            default :
+                /*TODO: Error Codes*/
+            break;
+        }
+    }
+    else
+    {
+        /*TODO: Error Codes*/
+    }
+        
+    return u8_value;
+}
 
 /*************** END OF FUNCTIONS ***************************************************************************/

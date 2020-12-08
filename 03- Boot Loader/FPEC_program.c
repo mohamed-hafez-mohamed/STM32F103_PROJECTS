@@ -51,33 +51,6 @@
 /******************************************************************************
 * Function Definitions
 *******************************************************************************/
-
-/******************************************************************************
-* Function : MFPEC_u8ProgramOneHalfWordFlash()
-*//** 
-* \b Description:
-*
-* This function is used to write code on the flash using flash driver peripheral. 
-*
-* PRE-CONDITION:  Internal clock cycle must be enabled.
-* PRE-CONDITION:  App area must be erased before writing op.
-* 
-* POST-CONDITION: None
-*
-* @param [in]     The address of the code line.
-* @param [in]     Bytes of the code line.
-* 
-* @return 		   The state of writing done ornot.
-*
-* \b Example Example:
-* @code
-* 	MFPEC_u8ProgramOneHalfWordFlash(0x08001000, Code);
-*
-* @endcode
-*
-* @see MFPEC_u8ProgramOneHalfWordFlash
-*
-*******************************************************************************/
 u8 MFPEC_u8ProgramHalfWordFlash(u32 Copy_u32Address, u16 Copy_u16Code)
 {
    u8 Local_u8WritingState = 0;
@@ -96,38 +69,9 @@ u8 MFPEC_u8ProgramHalfWordFlash(u32 Copy_u32Address, u16 Copy_u16Code)
    *((volatile u16*)(Copy_u32Address)) = Copy_u16Code;
    // Wait for the BSY bit to be reset.
    while(GET_BIT(FPEC->SR, BSY) == SET);
-   // End of programming.
-   SET_BIT(FPEC->SR, EOP);
    CLR_BIT(FPEC->CR, PG);
 }
 
-/******************************************************************************
-* Function : MFPEC_u8ProgramFlash()
-*//** 
-* \b Description:
-*
-* This function is used to write code on the flash using flash driver peripheral. 
-*
-* PRE-CONDITION:  Internal clock cycle must be enabled.
-* PRE-CONDITION:  App area must be erased before writing op.
-* 
-* POST-CONDITION: None
-*
-* @param [in]     The address of the beginning of the app area.
-* @param [in]     An array that contain bytes that the code consists of.
-* @param [in]     The number of half words that the array consists of.
-* 
-* @return 		   void.
-*
-* \b Example Example:
-* @code
-* 	MFPEC_u8ProgramFlash(0x08001000, &Coderray, 16);
-*
-* @endcode
-*
-* @see MFPEC_u8ProgramFlash
-*
-*******************************************************************************/
 void MFPEC_u8ProgramFlash(u32 Copy_u32Address, u16 * Copy_u16Code, u8 Copy_u8Length)
 {
    // Check that no main Flash memory operation is ongoing.
@@ -148,36 +92,11 @@ void MFPEC_u8ProgramFlash(u32 Copy_u32Address, u16 * Copy_u16Code, u8 Copy_u8Len
       Copy_u32Address += TWO_BYTE;
       // Wait for the BSY bit to be reset.
       while(GET_BIT(FPEC->SR, BSY) == SET);
-      // End of programming.
-      SET_BIT(FPEC->SR, EOP);
+
       CLR_BIT(FPEC->CR, PG);
    }
 }
 
-/******************************************************************************
-* Function : MFPEC_voidErasePage()
-*//** 
-* \b Description:
-*
-* This function is used to erase page of the flash. 
-*
-* PRE-CONDITION:  Internal clock cycle must be enabled.
-* 
-* POST-CONDITION: None
-*
-* @param [in]     The page number.
-* 
-* @return 		   void.
-*
-* \b Example Example:
-* @code
-* 	MFPEC_voidErasePage(16);
-*
-* @endcode
-*
-* @see MFPEC_voidErasePage
-*
-*******************************************************************************/
 void MFPEC_voidErasePage(u16 Copy_u16PageNumber)
 {
    // Check that no main Flash memory operation is ongoing.
@@ -197,89 +116,15 @@ void MFPEC_voidErasePage(u16 Copy_u16PageNumber)
    SET_BIT(FPEC->CR, STRT);
    /*Wait for the BSY bit to be reset*/
    while(GET_BIT(FPEC->SR, BSY) == SET);
-   // End of programming.
-   SET_BIT(FPEC->SR, EOP);
-   CLR_BIT(FPEC->CR, PG);
-}
 
-/******************************************************************************
-* Function : MFPEC_voidEraseAppArea()
-*//** 
-* \b Description:
-*
-* This function is used to erase the app area. 
-*
-* PRE-CONDITION:  Internal clock cycle must be enabled.
-* PRE-CONDITION:  The first page number in app area must be defined in FPEC_config.
-* PRE-CONDITION:  The last  page number in app area must be defined in FPEC_config.
-* 
-* POST-CONDITION: None
-*
-* @param [in]     void.
-* 
-* @return 		   void.
-*
-* \b Example Example:
-* @code
-* 	MFPEC_voidEraseAppArea();
-*
-* @endcode
-*
-* @see MFPEC_voidEraseAppArea
-*
-*******************************************************************************/
-void MFPEC_voidEraseAppArea(void)
+   CLR_BIT(FPEC->CR, PER);
+}
+void MFPEC_voidEraseAppArea(u16 Copy_u16FirstPageNumber, u16 Copy_u16LastPageNumber)
 {
-   for(u8 Local_u8Page = FIRST_PAGE_NUMBER_IN_APP_AREA;Local_u8Page <= LAST_PAGE_NUMBER_IN_APP_AREA;Local_u8Page++)
+   for(u8 Local_u8Page = Copy_u16FirstPageNumber;Local_u8Page <= Copy_u16LastPageNumber;Local_u8Page++)
    {
       MFPEC_voidErasePage(Local_u8Page);
    }
-}
-
-/******************************************************************************
-* Function : MFPEC_voidErasePage()
-*//** 
-* \b Description:
-*
-* This function is used to erase the flash. 
-*
-* PRE-CONDITION:  Internal clock cycle must be enabled.
-* 
-* POST-CONDITION: None
-*
-* @param [in]     void.
-* 
-* @return 		   void.
-*
-* \b Example Example:
-* @code
-* 	MFPEC_voidEraseMass();
-*
-* @endcode
-*
-* @see MFPEC_voidEraseMass
-*
-*******************************************************************************/
-void MFPEC_voidEraseMass(void)
-{
-   // Check that no main Flash memory operation is ongoing.
-   while(GET_BIT(FPEC->SR, BSY) == SET);
-   // Check if the flash locked or not.
-   if(GET_BIT(FPEC->CR, LOCK) == SET)
-   {
-      // Perform Unlock Sequence To Unlock FPEC Peripheral.
-      FPEC->KEYR = FPEC_KEY_1;
-      FPEC->KEYR = FPEC_KEY_2;
-   }
-   // Set the MER bit in the FLASH_CR register to select mass erasing.
-   SET_BIT(FPEC->CR, MER);
-   // Set the STRT bit in the FLASH_CR register to start mass erase operation.
-   SET_BIT(FPEC->CR, STRT);
-   /*Wait for the BSY bit to be reset*/
-   while(GET_BIT(FPEC->SR, BSY) == SET);
-   // End of programming.
-   SET_BIT(FPEC->SR, EOP);
-   CLR_BIT(FPEC->CR, PG);
 }
 
 /*************** END OF FUNCTIONS ***************************************************************************/

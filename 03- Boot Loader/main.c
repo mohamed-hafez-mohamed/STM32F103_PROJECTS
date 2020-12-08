@@ -34,7 +34,8 @@
 /******************************************************************************
 * Module Preprocessor Constants
 *******************************************************************************/
-
+#define FIRST_PAGE_NUMBER_IN_APP_AREA   8
+#define LAST_PAGE_NUMBER_IN_APP_AREA    64
 /******************************************************************************
 * Module Preprocessor Macros
 *******************************************************************************/
@@ -48,9 +49,9 @@
 *******************************************************************************/
 static volatile u8  Static_u8RecordBuffer[NUMBER_OF_DIGITS_IN_RECORD];
 static volatile u8  Static_u8RecordCounter;
-static volatile u8  Static_u8TimeOutFlag;
 static volatile u16 Static_u16TimerCounter;
 static volatile u8  Static_u8BLWriteRequest;
+static volatile u8  Static_u8TimeOutFlag;
 /******************************************************************************
 * Function Definitions
 *******************************************************************************/
@@ -59,22 +60,24 @@ int main()
 {
   // Set the variables values.
   Static_u8RecordCounter   = 0;
-  Static_u8TimeOutFlag     = 0;
   Static_u16TimerCounter   = 0;
   Static_u8BLWriteRequest  = 1;
+  Static_u8TimeOutFlag     = 0;
   u8 Local_u8RecordStatus  = 0;
   // Initialize peripheral used.
   MRCC_voidInitSysClock();
-	MRCC_voidEnableClock(RCC_APB2, IOPA_PERIPHERAL);
-	MRCC_voidEnableClock(RCC_APB2, USART1_PERIPHERAL);
-  MRCC_voidEnableClock(RCC_AHB , FLITF_PERIPHERAL);
+  MRCC_voidEnableClock(RCC_APB2, IOPA_PERIPHERAL);
+  MRCC_voidEnableClock(RCC_APB2, USART1_PERIPHERAL);
+  //MRCC_voidEnableClock(RCC_AHB , FLITF_PERIPHERAL);
   MSTK_voidInit();
   MUART_voidInit();
-  MSTK_voidSetIntervalSingle_ms(WAIT_TIME, ABL_voidJumpToApp, NULL);
-  while(Static_u8TimeOutFlag == 0)
+  MGPIO_voidSetPinMode(UART_1_TX,  AFIO_OUTPUT_2M_PULL_UP_DN);
+  MGPIO_voidSetPinMode(UART_1_RX, GPIO_INPUT_FLOATING);
+  MSTK_voidSetIntervalSingle_ms(WAIT_TIME, &ABL_voidJumpToApp, NULL);
+  while(1)
   {
     // Store the UART status.
-	  Local_u8RecordStatus = MUART_u8ReceiveSynch(UART1, &(Static_u8RecordBuffer[Static_u8RecordCounter]));
+	  Local_u8RecordStatus = MUART_u8ReceiveSynch(&(Static_u8RecordBuffer[Static_u8RecordCounter]));
     // Check the UART status received data or not.
     if(Local_u8RecordStatus == RECEIVED_DATA)
     {
@@ -84,13 +87,13 @@ int main()
         if(Static_u8BLWriteRequest == WRITING_FLASH_REQUSTED)
         {
           // Erasing flash only one time to be writed.
-          MFPEC_voidEraseAppArea();
+          MFPEC_voidEraseAppArea(FIRST_PAGE_NUMBER_IN_APP_AREA, LAST_PAGE_NUMBER_IN_APP_AREA);
           Static_u8BLWriteRequest = DISABLE_FLASH_REQUEST;
         }
         // Parse record contents and flash data.
-        ABL_voidParseData(Static_u8RecordBuffer);
+        ABL_voidParseRecord(Static_u8RecordBuffer);
         // Acknowlage code sender to send anothe record.
-        MUART_voidTransmitSynch(UART1, "ok");
+        MUART_voidTransmitSynch("ok");
         Static_u8RecordCounter = RESET_COUNTER_TO_START_NEW_REC;
       }
       else
