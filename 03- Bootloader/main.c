@@ -55,18 +55,18 @@
 	
 int main()
 {
-  // Initialize peripheral used.
-  MRCC_voidInitSysClock();
-  MRCC_voidEnableClock(RCC_APB2, IOPA_PERIPHERAL);
-  MRCC_voidEnableClock(RCC_APB2, USART1_PERIPHERAL);
-  MRCC_voidEnableClock(RCC_AHB,  CRCE_PERIPHERAL);
-	MRCC_voidEnableClock(RCC_AHB,  FLITF_PERIPHERAL);
-  MSTK_voidInit();
-  MUART_voidInit();
-  MGPIO_voidSetPinMode(UART_1_TX, AFIO_OUTPUT_2M_PULL_UP_DN);
-  MGPIO_voidSetPinMode(UART_1_RX, GPIO_INPUT_FLOATING);
-	// Execute Branch Code.
-	ABR_voidBranchCode();
+   // Initialize peripheral used.
+   MRCC_voidInitSysClock();
+   MRCC_voidEnableClock(RCC_APB2, IOPA_PERIPHERAL);
+   MRCC_voidEnableClock(RCC_APB2, USART1_PERIPHERAL);
+   MRCC_voidEnableClock(RCC_AHB,  CRCE_PERIPHERAL);
+   MRCC_voidEnableClock(RCC_AHB,  FLITF_PERIPHERAL);
+   MSTK_voidInit();
+   MUART_voidInit();
+   MGPIO_voidSetPinMode(UART_1_TX, AFIO_OUTPUT_2M_PULL_UP_DN);
+   MGPIO_voidSetPinMode(UART_1_RX, GPIO_INPUT_FLOATING);
+   // Execute Branch Code.
+   ABR_voidBranchCode();
 }
 
 /*************** END OF FUNCTIONS ***************************************************************************/
