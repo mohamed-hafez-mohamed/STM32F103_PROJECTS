@@ -1,1 +1,28 @@
+MCU STM32F103C8T6 Based On ARM Cortex-M3
+Bootloader specs:
+1-	Can receive code while flash is empty and flash it.
+2-	Can receive code while there is an image exists, it installs the new image in the active one.
+3-	It checks the CRC of the new image if it is right it moves it to backup region and jumps to the active region to executes the image.
+4-	If the CRC of the new image is wrong it moves the backup image to the active Region to execute it.
+5-	It checks CRC for each image while receiving and each time to execute it and if the CRC is wrong it makes it corrupted and move to the rollback image if exists if not it jumps to bootloader.
+6-	It receives the code only without address.
+Enhancements Coming Soon:
+1-	Check Communication errors.
+2-	Check Power Failure.
+3-	Check checksum if it’s needed.
+Memory Region = 64 KB:
+1-	Bootloader 
+Size = 3kB but it’s memory is 5kB for future enhancements
+0X0800000:   0X08001FFF
+2-	Active Region
+Size = 29 KB
+0X08002000: 0X080008FF
+3-	Backup Region
+Size = 29 KB
+0X08009000: 0X0800FBFF
+4-	Header Region
+Size = 1 KB
+0X0800FC00: 0X080FFFF
+
+
 
