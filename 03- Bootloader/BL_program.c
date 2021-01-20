@@ -55,16 +55,16 @@ extern Global_u8FirstFlashingFlag;
 *******************************************************************************/
 static u8 ABL_u8AsciiToHex(u8 Copy_u8Ascii)
 {
-	u8 Local_u8Result;
-	if ( (Copy_u8Ascii >= ZERO_IN_ASCII) && (Copy_u8Ascii <= NINE_IN_ASCII) )
-	{
-		Local_u8Result = Copy_u8Ascii - CONVERT_NUMBERS_UNDER_NINE_ASCII_TO_HEX;
-	}
-	else
-	{
-		Local_u8Result = Copy_u8Ascii - CONVERT_NUMBERS_ABOVE_NINE_TO_HEX;
-	}
-	return Local_u8Result;
+   u8 Local_u8Result;
+   if ((Copy_u8Ascii >= ZERO_IN_ASCII) && (Copy_u8Ascii <= NINE_IN_ASCII) )
+   {
+   	Local_u8Result = Copy_u8Ascii - CONVERT_NUMBERS_UNDER_NINE_ASCII_TO_HEX;
+   }
+   else
+   {
+   	Local_u8Result = Copy_u8Ascii - CONVERT_NUMBERS_ABOVE_NINE_TO_HEX;
+   }
+   return Local_u8Result;
 }
 
 void ABL_voidHandleActiveImageVectorTable(void)
