@@ -152,7 +152,7 @@ typedef void (*Function_t)(void);
 *
 * @param [in]     void
 * 
-* @return 		   void
+* @return         void
 *
 * \b Example Example:
 * @code
@@ -177,7 +177,7 @@ void ABR_voidBranchCode(void);
 *
 * @param [in]     void
 * 
-* @return 		   void
+* @return         void
 *
 * \b Example Example:
 * @code
@@ -202,7 +202,7 @@ void ABR_voidCheckActiveRegion(void);
 *
 * @param [in]     void
 * 
-* @return 		   32
+* @return         u32
 *
 * \b Example Example:
 * @code
@@ -228,7 +228,7 @@ u32  ABR_32CheckBackupRegion(void);
 *
 * @param [in]     void
 * 
-* @return 		   u8
+* @return 	  u8
 *
 * \b Example Example:
 * @code
@@ -254,7 +254,7 @@ u8   ABR_u8CheckImageExistingOrCorruptted(void);
 *
 * @param [in]     void
 * 
-* @return 		   u8
+* @return         u8
 *
 * \b Example Example:
 * @code
@@ -280,7 +280,7 @@ u8   ABR_u8BollingUntillAck(void);
 *
 * @param [in]     void
 * 
-* @return 		   void
+* @return         void
 *
 * \b Example Example:
 * @code
@@ -305,7 +305,7 @@ void ABR_voidUpdateHeaders(void);
 *
 * @param [in]     void
 * 
-* @return 		   void
+* @return 	  void
 *
 * \b Example Example:
 * @code
@@ -330,7 +330,7 @@ void ABR_voidJumpToBootloader(void);
 *
 * @param [in]     void
 * 
-* @return 		   void
+* @return 	  void
 *
 * \b Example Example:
 * @code
@@ -355,7 +355,7 @@ void ABR_voidJumpToAactiveRegion(void);
 *
 * @param [in]     void
 * 
-* @return 		   u32
+* @return 	  u32
 *
 * \b Example Example:
 * @code
@@ -380,7 +380,7 @@ u32  ABR_u32CalculateActiveImageCRC(void);
 *
 * @param [in]     void
 * 
-* @return 		   u32
+* @return 	  u32
 *
 * \b Example Example:
 * @code
@@ -405,7 +405,7 @@ u32  ABR_u32CalculateBackupImageCRC(void);
 *
 * @param [in]     void
 * 
-* @return 		   void
+* @return 	  void
 *
 * \b Example Example:
 * @code
@@ -430,7 +430,7 @@ void ABR_voidCopyImageToActiveRegion(void);
 *
 * @param [in]     void
 * 
-* @return 		   void
+* @return 	  void
 *
 * \b Example Example:
 * @code
@@ -455,7 +455,7 @@ void ABR_voidCopyImageToBackupRegion(void);
 *
 * @param [in]     void
 * 
-* @return 		   void
+* @return 	  void
 *
 * \b Example Example:
 * @code
@@ -480,7 +480,7 @@ void ABR_voidSetBranchingFlagAndMakeSWR(void);
 *
 * @param [in]     void
 * 
-* @return 		   void
+* @return 	  void
 *
 * \b Example Example:
 * @code
@@ -505,7 +505,7 @@ void ABL_voidReceiveCode(void);
 *
 * @param [in]     u8*, u32
 * 
-* @return 		   void
+* @return 	  void
 *
 * \b Example Example:
 * @code
@@ -530,7 +530,7 @@ void ABL_voidStoreRecord(u8 * Copy_u8BufferRecord, u32 Copy_u32RecordAdddress);
 *
 * @param [in]     void
 * 
-* @return 		   void
+* @return 	  void
 *
 * \b Example Example:
 * @code
@@ -555,7 +555,7 @@ void ABL_voidHandleActiveImageVectorTable(void);
 *
 * @param [in]     void
 * 
-* @return 		   void
+* @return 	  void
 *
 * \b Example Example:
 * @code
