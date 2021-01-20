@@ -100,75 +100,77 @@ void ABL_voidStoreRecord(u8 * Copy_u8BufferRecord, u32 Copy_u32RecordAdddress)
 
 void ABL_voidReceiveCode(void)
 {
-  u8  Local_u8RecordBuffer[BL_NUMBER_OF_DIGITS_IN_RECORD]  = {BL_INITIALIZE_WITH_ZERO};
-  u8  Local_u8RecordCounter                                = BL_RESET_COUNTER_TO_START_NEW_REC ;
-  u8  Local_u8UartReceivedStatus                           = BLNOT_RECEIVED;
-  u8  Local_u8GatewayRequest                               = BL_INITIALIZE_WITH_FALSE;
-  u32 Local_u32InactiveImageAddressCounter                 = ADRESS_OF_ACTIVE_IMAGE_STARTUP;
-  // Erasing flash only one time to be written.
-  MFPEC_voidEraseAppArea(FIRST_PAGE_NUMBER_IN_ACTIVE_IMAGE_REGION, LAST_PAGE_NUMBER_IN_ACTIVE_IMAGE_REGION);
-	// Acknowledge Gateway that Header Received.
-	MUART_voidTransmitByteSynch(UDS_MCU_ACKNOWLEDGE_HEADER_RECEIVED);
-	Local_u8GatewayRequest = MUART_u8ReceiveByteSynch();
-	if(Local_u8GatewayRequest == UDS_GWY_REQUEST_SENDING_LINE_OF_CODE)
-	{
-		while(1)
+    u8  Local_u8RecordBuffer[BL_NUMBER_OF_DIGITS_IN_RECORD]  = {BL_INITIALIZE_WITH_ZERO};
+    u8  Local_u8RecordCounter                                = BL_RESET_COUNTER_TO_START_NEW_REC ;
+    u8  Local_u8UartReceivedStatus                           = BLNOT_RECEIVED;
+    u8  Local_u8GatewayRequest                               = BL_INITIALIZE_WITH_FALSE;
+    u32 Local_u32InactiveImageAddressCounter                 = ADRESS_OF_ACTIVE_IMAGE_STARTUP;
+    // Erasing flash only one time to be written.
+    MFPEC_voidEraseAppArea(FIRST_PAGE_NUMBER_IN_ACTIVE_IMAGE_REGION, LAST_PAGE_NUMBER_IN_ACTIVE_IMAGE_REGION);
+    // Acknowledge Gateway that Header Received.
+    MUART_voidTransmitByteSynch(UDS_MCU_ACKNOWLEDGE_HEADER_RECEIVED);
+    Local_u8GatewayRequest = MUART_u8ReceiveByteSynch();
+    if(Local_u8GatewayRequest == UDS_GWY_REQUEST_SENDING_LINE_OF_CODE)
     {
-      // Store the UART status.
+	while(1)
+        {
+            // Store the UART status.
 	    Local_u8UartReceivedStatus = MUART_u8ReceiveSynch(&(Local_u8RecordBuffer[Local_u8RecordCounter]));
-      // Check the UART status received data or not.
-      if(Local_u8UartReceivedStatus == BL_RECEIVED_DATA)
-      {
-        if(Local_u8RecordBuffer[Local_u8RecordCounter] == BL_THE_LAST_DIGIT_IN_RECORD)
-        {
-          // Parse record contents and flash data.
-          ABL_voidStoreRecord(Local_u8RecordBuffer, Local_u32InactiveImageAddressCounter);
-          // Acknowledge code sender to send another record.
-          MUART_voidTransmitSynch(UDS_MCU_ACKNOWLEDGE_LINE_OF_CODE_RECEIVED);
-          Local_u8RecordCounter = BL_RESET_COUNTER_TO_START_NEW_REC;
-			    // Deermine The Address Of the Next Record.
-			    Local_u32InactiveImageAddressCounter += BL_INCREASE_RECORD_ADDRESS_WITH_16_BYTE;
+            // Check the UART status received data or not.
+            if(Local_u8UartReceivedStatus == BL_RECEIVED_DATA)
+            {
+                if(Local_u8RecordBuffer[Local_u8RecordCounter] == BL_THE_LAST_DIGIT_IN_RECORD)
+                {
+                    // Parse record contents and flash data.
+                    ABL_voidStoreRecord(Local_u8RecordBuffer, Local_u32InactiveImageAddressCounter);
+                    // Acknowledge code sender to send another record.
+                    MUART_voidTransmitSynch(UDS_MCU_ACKNOWLEDGE_LINE_OF_CODE_RECEIVED);
+                    Local_u8RecordCounter = BL_RESET_COUNTER_TO_START_NEW_REC;
+	            // Deermine The Address Of the Next Record.
+	            Local_u32InactiveImageAddressCounter += BL_INCREASE_RECORD_ADDRESS_WITH_16_BYTE;
+                }
+		else if(Local_u8RecordBuffer[Local_u8RecordCounter] == UDS_GWY_ACKNOWLEDGE_FINISHING)
+		{
+	            ABL_voidFinishBootLoader();
+		}
+                else
+                {
+                    Local_u8RecordCounter++;
+                }
+            }
+            else
+            {
+                // Don't do anything.
+            }
         }
-				else if(Local_u8RecordBuffer[Local_u8RecordCounter] == UDS_GWY_ACKNOWLEDGE_FINISHING)
-				{
-	        ABL_voidFinishBootLoader();
-				}
-        else
-        {
-          Local_u8RecordCounter++;
-        }
-      }
-      else
-      {
-        // Don't do anything.
-      }
-    }
-	}
-	else
-	{
-		// Don't do anything.
-	}
+   }
+   else
+   {
+       // Don't do anything.
+   }
 }
 
 void ABL_voidFinishBootLoader(void)
 {
-	// Acknowledge Gateway that the New Cod Received.
-	MUART_voidTransmitByteSynch(UDS_MCU_ACKNOWLEDGE_FINISHING);
-	// Update Headers
-  FEE_voidEraseRestoreHeaderPage(ACTIVE_IMAGE_STATUS_ADDRESS, BR_SET_IMAGE_ACTIVE);
-	FEE_voidEraseRestoreHeaderPage(BACKUP_IMAGE_STATUS_ADDRESS, BR_SET_IMAGE_BACKUP);
-	// Move Vector table to the active region.
-	ABL_voidHandleActiveImageVectorTable();
-	// Move the active image to the backup region when the backup region erased.
-	if(Global_u8FirstFlashingFlag == BL_FIRST_FLASHING)
-	{
-		Global_u8FirstFlashingFlag = BL_NOT_FIRST_FLASHING;
-		ABR_voidCopyImageToBackupRegion();
-	}
-	// Reset Branching Flag.
-	FEE_voidEraseRestoreHeaderPage(BL_BRANCHING_FLAG_ADDRESS, BL_RESET_BRANCHING_FLAG);
-	// Make Software Reset.
-	IWDT_voidMakeSoftWareReset();
+    // Acknowledge Gateway that the New Cod Received.
+    MUART_voidTransmitByteSynch(UDS_MCU_ACKNOWLEDGE_FINISHING);
+    // Update Headers
+    FEE_voidEraseRestoreHeaderPage(ACTIVE_IMAGE_STATUS_ADDRESS, BR_SET_IMAGE_ACTIVE);
+    FEE_voidEraseRestoreHeaderPage(BACKUP_IMAGE_STATUS_ADDRESS, BR_SET_IMAGE_BACKUP);
+    // Move Vector table to the active region.
+    ABL_voidHandleActiveImageVectorTable();
+    // Move the active image to the backup region when the backup region erased.
+    if(Global_u8FirstFlashingFlag == BL_FIRST_FLASHING)
+    {
+	__disable_irq();
+    	Global_u8FirstFlashingFlag = BL_NOT_FIRST_FLASHING;
+	__enable_irq();
+    	ABR_voidCopyImageToBackupRegion();
+    }
+    // Reset Branching Flag.
+    FEE_voidEraseRestoreHeaderPage(BL_BRANCHING_FLAG_ADDRESS, BL_RESET_BRANCHING_FLAG);
+    // Make Software Reset.
+    IWDT_voidMakeSoftWareReset();
 }
 
 /*************** END OF FUNCTIONS ***************************************************************************/
