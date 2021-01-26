@@ -10,6 +10,7 @@ Enhancements Coming Soon:
 1-	Check Communication errors.
 2-	Check Power Failure.
 3-	Check checksum if it’s needed.
+4-  memory protection
 Memory Region = 64 KB:
 1-	Bootloader 
 Size = 3kB but it’s memory is 5kB for future enhancements
