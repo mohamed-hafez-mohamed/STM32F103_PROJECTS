@@ -49,17 +49,18 @@
 
 int main()
 {
-    /* Initialize the RCC to HSE */
-	  MRCC_voidInitSysClock();
-	  MRCC_voidEnableClock(RCC_APB2 , IOPA_PERIPHERAL);
-	  MGPIO_voidSetPinMode(PINA0, GPIO_OUTPUT_2M_PULL_UP_DN);
+    /* Initialize the peripheral */
+    MRCC_voidInitSysClock();
+    MRCC_voidEnableClock(RCC_APB2 , IOPA_PERIPHERAL);
+    MGPIO_voidSetPinMode(PINA0, GPIO_OUTPUT_2M_PULL_UP_DN);
     MGPIO_voidSetPinMode(PINA1, GPIO_OUTPUT_2M_PULL_UP_DN);
     MGPIO_voidSetPinMode(PINA2, GPIO_OUTPUT_2M_PULL_UP_DN);
     MSTK_voidInit();
-	  TL_voidInitializeTrafficLineStack();
+    // initialize stack
+    TL_voidInitializeTrafficLineStack();
     while(1)
     {
-	  	 TL_voidRunTlSystem();
+       TL_voidRunTlSystem();
     }
 }
 
